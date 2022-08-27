@@ -8,16 +8,20 @@ const messagesElement = document.querySelector("#messages");
 const messageTemplate = document.querySelector("#message-template").innerHTML;
 const locationTemplate = document.querySelector("#location-template").innerHTML;
 
+// Render message in html
 socket.on("message", (message) => {
   const html = Mustache.render(messageTemplate, {
-    message,
+    message: message.text,
+    createdAt: moment(message.createdAt).format("h:mm a"),
   });
   messagesElement.insertAdjacentHTML("beforeend", html);
 });
 
+// Render message location in html
 socket.on("locationMessage", (url) => {
   const html = Mustache.render(locationTemplate, {
-    url,
+    url: message.text,
+    createdAt: moment(message.createdAt).format("h:mm a"),
   });
   messagesElement.insertAdjacentHTML("beforeend", html);
 });
@@ -34,9 +38,7 @@ formSelector.addEventListener("submit", function (e) {
   socket.emit("messageSend", message, (error) => {
     messageFormBtn.removeAttribute("disabled"); //enable button after sending message
     messageFormInput.focus(); //focus on input field
-    if (error) {
-      return console.log(error);
-    }
+    if (error) return console.log(error);
     console.log("Message delivered");
   });
 });
@@ -60,8 +62,3 @@ sendLocationBtn.addEventListener("click", function (e) {
     );
   });
 });
-
-// document.querySelector("#increment").addEventListener("click", () => {
-//   console.log("Clicked");
-//   socket.emit("increment");
-// });
